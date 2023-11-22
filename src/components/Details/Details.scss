@@ -1,0 +1,41 @@
+.page-title {
+  text-align: center;
+}
+
+.details-container {
+  display: block;
+  width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.back-button {
+  margin: 0 auto;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  -webkit-animation: pulse 1.5s infinite;
+  background: rgba(246, 207, 87, 1);
+  color: black;
+
+  &:hover {
+    -webkit-animation: none;
+  }
+}
+
+@keyframes pulse {
+	0% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(246, 207, 87, 0.7);
+	}
+
+	70% {
+		transform: scale(1);
+		box-shadow: 0 0 0 10px rgba(246, 207, 87, 0);
+	}
+
+	100% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(246, 207, 87, 0);
+	}
+}

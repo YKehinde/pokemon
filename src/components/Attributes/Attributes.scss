@@ -1,0 +1,47 @@
+.attributes {
+  margin: 0 auto;
+h2 {
+  text-align: center;
+  margin: 0;
+}
+}
+.attribute-row {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  margin: 0 auto;
+
+  h3, p {
+    align-self: center;
+    margin: 10px;
+  }
+}
+
+.types-list {
+  display: flex;
+  justify-content: space-between;
+  width: 60%;
+  margin: 20px auto;
+}
+
+.move-list {
+  width: 800px;
+  p {
+    margin: 0;
+    text-align: left;
+  }
+  @media (min-width: 600px) {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    justify-content: center;
+
+    div {
+      width: 25%;
+      p {
+        text-align: center;
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+.list-item {
+  width: 100%;
+  display: block;
+
+    @media (min-width: 600px) {
+  //   // display: flex;
+  //   // justify-content: start;
+    width: 30%;
+  }
+  h2.pokemon-title {
+    width: 100%;
+  }
+}
+
