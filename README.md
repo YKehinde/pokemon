@@ -31,6 +31,9 @@ Easier/quicker development. Usually less lines and repetition. Nesting to aid sp
 ### React Router
 Using this to create dynamic pages for each pokemon. I can then open each one, populate the data based on the clicked pokemon name without having to pass props.
 
+### usehooks-ts (useSessionStorage)
+Using it in place of setState but storing the changes in session storage to keep the data persisting on refresh and across pages/paths
+
 
 ## What I've done
 * Created a home page which is a list of the pokemon
@@ -51,3 +54,4 @@ Using this to create dynamic pages for each pokemon. I can then open each one, p
 * Add card components for the types to have the colour coded to an extent
 * Append measurements like height and weight to have the metric, e.g. kg
 * I would have used typescript properly
+* Would have used context to handle storage across the application whilst still using session storage

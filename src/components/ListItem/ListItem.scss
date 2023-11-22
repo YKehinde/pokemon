@@ -3,12 +3,20 @@
   display: block;
 
     @media (min-width: 600px) {
-  //   // display: flex;
+    display: flex;
   //   // justify-content: start;
     width: 30%;
+    justify-content: center;
   }
   h2.pokemon-title {
     width: 100%;
   }
+}
+
+.star {
+  width: 30px;
+  margin: 0 10px;
+  cursor: pointer;
+  filter: invert(78%) sepia(70%) saturate(395%) hue-rotate(348deg) brightness(98%) contrast(96%);
 }
 

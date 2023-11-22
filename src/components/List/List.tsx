@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import './List.scss';
+import { useNavigate } from 'react-router-dom';
+import PokemonLogo from '../../assets/pokemon-logo-black-transparent.png';
 import { useGetPokemon } from '../../queries/useGetPokemon';
 import ListItem from '../ListItem/ListItem';
-import PokemonLogo from '../../assets/pokemon-logo-black-transparent.png';
-import { useNavigate } from 'react-router-dom';
+import './List.scss';
+import { useSessionStorage } from 'usehooks-ts';
 
 const List = () => {
   const navigate = useNavigate();
   const [offset, setOffset] = useState(0);
   const { data: pokemonList, isLoading } = useGetPokemon(offset);
   const [searchTerm, setSearchTerm] = useState('');
+  const [favourite, setFavourite] = useSessionStorage<string[]>('favourites', []);
 
   // Made it one function to handle both buttons
   const handlePagination = step => {
@@ -23,6 +25,14 @@ const List = () => {
       if (searchTerm === '') return;
 
       navigate(`/${searchTerm}`);
+    }
+  };
+
+  const handleFavourite = (name: string) => () => {
+    if (favourite.includes(name)) {
+      setFavourite(prevFavourite => prevFavourite.filter(item => item !== name));
+    } else {
+      setFavourite(prevFavourite => [...prevFavourite, name]);
     }
   };
 
@@ -44,7 +54,14 @@ const List = () => {
 
       <div className="list-container">
         {pokemonList ? (
-          pokemonList.map((p, index) => <ListItem key={`${p.name}-${index}`} name={p.name} />)
+          pokemonList.map((p, index) => (
+            <ListItem
+              key={`${p.name}-${index}`}
+              name={p.name}
+              onClick={handleFavourite(p.name)}
+              favourite={favourite.includes(p.name)}
+            />
+          ))
         ) : isLoading ? (
           <h2>Loading...</h2>
         ) : (
