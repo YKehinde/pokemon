@@ -50,3 +50,4 @@ Using this to create dynamic pages for each pokemon. I can then open each one, p
 * Delve into the additional sprites and possibal make it a carousel
 * Add card components for the types to have the colour coded to an extent
 * Append measurements like height and weight to have the metric, e.g. kg
+* I would have used typescript properly
