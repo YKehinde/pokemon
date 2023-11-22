@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSessionStorage } from 'usehooks-ts';
 import PokemonLogo from '../../assets/pokemon-logo-black-transparent.png';
 import { useGetPokemon } from '../../queries/useGetPokemon';
 import ListItem from '../ListItem/ListItem';
 import './List.scss';
-import { useSessionStorage } from 'usehooks-ts';
 
 const List = () => {
   const navigate = useNavigate();
   const [offset, setOffset] = useState(0);
-  const { data: pokemonList, isLoading } = useGetPokemon(offset);
+  const [showFavourites, setShowFavourites] = useState(false);
+  const { data: pokemonList, isLoading } = useGetPokemon(offset, showFavourites);
   const [searchTerm, setSearchTerm] = useState('');
   const [favourite, setFavourite] = useSessionStorage<string[]>('favourites', []);
 
@@ -36,6 +37,14 @@ const List = () => {
     }
   };
 
+  // const toggleShowFavourites = () => {
+  //   setShowFavourites(prevShowFavourites => !prevShowFavourites);
+  // };
+
+  // const displayedPokemons = showFavourites
+  //   ? pokemonList.filter(pokemon => favourite.includes(pokemon.name))
+  //   : pokemonList;
+
   return (
     <div className="body">
       <h1>
@@ -50,6 +59,7 @@ const List = () => {
           onKeyDown={handleSearch}
           onChange={e => setSearchTerm(e.target.value)}
         />
+        {/* <button onClick={toggleShowFavourites}>{showFavourites ? 'Show All' : 'Show Favourites'}</button> */}
       </div>
 
       <div className="list-container">
