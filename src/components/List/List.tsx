@@ -10,7 +10,7 @@ const List = () => {
   const navigate = useNavigate();
   const [offset, setOffset] = useState(0);
   const [showFavourites, setShowFavourites] = useState(false);
-  const { data: pokemonList, isLoading } = useGetPokemon(offset, showFavourites);
+  const { data: pokemonList, isLoading } = useGetPokemon(offset);
   const [searchTerm, setSearchTerm] = useState('');
   const [favourite, setFavourite] = useSessionStorage<string[]>('favourites', []);
 

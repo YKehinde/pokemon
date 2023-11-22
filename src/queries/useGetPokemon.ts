@@ -3,18 +3,16 @@ import { useQuery } from 'react-query';
 
 export const POKEMON = 'pokemon';
 
-const getPokemon = async (offset, favourites) => {
-  const { data } = await axios.get(
-    `https://pokeapi.co/api/v2/pokemon?offset=${offset}${favourites ? '' : '&limit=20'}`,
-  );
+const getPokemon = async offset => {
+  const { data } = await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=20`);
   return data.results;
 };
 
-const useGetPokemon = (offset: number, favourites: boolean) => {
+const useGetPokemon = (offset: number) => {
   return useQuery(
-    [POKEMON, offset, favourites],
+    [POKEMON, offset],
     () => {
-      return getPokemon(offset, favourites);
+      return getPokemon(offset);
     },
     { enabled: true, keepPreviousData: true },
   );

@@ -55,3 +55,4 @@ Using it in place of setState but storing the changes in session storage to keep
 * Append measurements like height and weight to have the metric, e.g. kg
 * I would have used typescript properly
 * Would have used context to handle storage across the application whilst still using session storage
+* Expanded the application to store reponses to a state in order to mange the filtering. The API doesn't currenlt allow to search multiple names via a query but i was also trying to avoid querying and storing all 1000+ entries
