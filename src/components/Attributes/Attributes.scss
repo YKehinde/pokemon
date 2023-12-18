@@ -1,27 +1,45 @@
 .attributes {
   margin: 0 auto;
-h2 {
-  text-align: center;
-  margin: 0;
+
+  h2 {
+    text-align: center;
+    margin: 0;
+  }
 }
-}
-.attribute-row {
+
+.key-attribute--container {
   display: flex;
-  justify-content: space-between;
   width: 80%;
   margin: 0 auto;
+  flex-flow: row wrap;
 
-  h3, p {
-    align-self: center;
-    margin: 10px;
+  .key-attribute--row {
+    width: 50%;
+    flex-flow: column wrap;
+    justify-content: space-around;
+
+    h3, p {
+      // align-self: center;
+      padding: 0 10px;
+      text-align: center;
+    }
   }
 }
 
 .types-list {
   display: flex;
-  justify-content: space-between;
-  width: 60%;
+  justify-content:space-evenly;
+  width: 40%;
   margin: 20px auto;
+
+  .type-pill {
+    height:25px;
+   width:75px;
+   border-radius: 30px;
+   background-color:blue;
+   border:none;
+   color:white;
+  }
 }
 
 .move-list {

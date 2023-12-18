@@ -29,6 +29,7 @@
 }
 
 .search-container {
+  display: flex;
   width: 50%;
   margin: 0 auto 30px;
   .search-input {
@@ -37,5 +38,6 @@
     display: block;
     width: 100%;
     padding: 0.375rem 0.75rem;
+    margin: 0 15px;
   }
 }

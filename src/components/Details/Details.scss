@@ -2,9 +2,21 @@
   text-align: center;
 }
 
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  width: 80%;
+  margin: 30px auto;
+  position: relative;
+}
+
+.default-image {
+  width: 100px;
+  margin: 0 auto;
+}
+
 .details-container {
   display: block;
-  width: 1200px;
+  max-width: 1200px;
   margin: 0 auto;
   text-align: center;
 }

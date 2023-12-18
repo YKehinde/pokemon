@@ -1,20 +1,27 @@
 .list-item {
   width: 100%;
   display: block;
+  border: solid black 2px;
+  position: relative;
+  border-radius: 5px;
+  margin: 10px 0;
 
     @media (min-width: 600px) {
     display: flex;
-  //   // justify-content: start;
-    width: 30%;
+    width: 20%;
     justify-content: center;
   }
   h2.pokemon-title {
+    font-size: clamp(1rem, 2vw, 1.5rem);
     width: 100%;
   }
 }
 
 .star {
+  position: absolute;
   width: 30px;
+  right: 5px;
+  top: 5px;
   margin: 0 10px;
   cursor: pointer;
   filter: invert(78%) sepia(70%) saturate(395%) hue-rotate(348deg) brightness(98%) contrast(96%);
