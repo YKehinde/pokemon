@@ -1,10 +1,10 @@
 import React from 'react';
-import './ListItem.scss';
 import { Link } from 'react-router-dom';
-import { capitalise } from '../../utils/Capitilise';
+import spinner from '../../assets/pokeball.gif';
 import starRegular from '../../assets/star-regular.svg';
 import starSolid from '../../assets/star-solid.svg';
-import spinner from '../../assets/pokeball.gif';
+import { capitalise } from '../../utils/Capitilise';
+import './ListItem.scss';
 
 interface ListItemProps {
   name: string;

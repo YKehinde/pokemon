@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSessionStorage } from 'usehooks-ts';
 import { useGetPokemon } from '../../queries/useGetPokemon';
 import ListItem from '../ListItem/ListItem';
@@ -12,17 +13,30 @@ type pokemonItemProps = {
 
 const List = () => {
   const navigate = useNavigate();
+  const history = createBrowserHistory();
+  const location = useLocation();
   const [offset, setOffset] = useState(0);
+  const [page, setPage] = useState(1);
   const [showFavourites, setShowFavourites] = useState(false);
   const { data: defaultList, isLoading } = useGetPokemon(offset);
   const [searchTerm, setSearchTerm] = useState('');
   const [favouriteList, setFavouriteList] = useSessionStorage<pokemonItemProps[]>('favourites', []);
 
-  // Made it one function to handle both buttons
-  const handlePagination = step => {
-    if (offset + step < 0) return;
+  useEffect(() => {
+    history.push(`?page=${page}`);
+    const pageParam = new URLSearchParams(location.search).get('page');
+    if (pageParam) {
+      setPage(Number(pageParam));
+    }
+  }, [location, page]);
 
-    setOffset(prevOffset => prevOffset + step);
+  useEffect(() => {
+    setOffset((page - 1) * 20);
+  }, [page]);
+
+  const handlePagination = (step: number): void => {
+    if (page + step < 1) return;
+    setPage(prevPage => prevPage + step);
   };
 
   const handleSearch = event => {
