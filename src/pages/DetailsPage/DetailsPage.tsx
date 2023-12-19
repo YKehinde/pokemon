@@ -4,12 +4,12 @@ import starRegular from '../../assets/star-regular.svg';
 import starSolid from '../../assets/star-solid.svg';
 import { useGetPokemonDetails } from '../../queries/useGetPokemonDetails';
 import { capitalise } from '../../utils/Capitilise';
-import Attributes from '../Attributes/Attributes';
-import Sprites from '../Sprites/Sprites';
-import './Details.scss';
+import Attributes from '../../components/Attributes/Attributes';
+import Sprites from '../../components/Sprites/Sprites';
+import './DetailsPage.scss';
 import { useSessionStorage } from 'usehooks-ts';
 
-const Details = () => {
+const DetailsPage = () => {
   const navigate = useNavigate();
   const paramName = useLocation().pathname.split('/')[1];
   const { data: pokemon, isLoading } = useGetPokemonDetails(paramName || '');
@@ -56,4 +56,4 @@ const Details = () => {
   );
 };
 
-export default Details;
+export default DetailsPage;

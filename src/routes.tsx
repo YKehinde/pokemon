@@ -1,16 +1,16 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import Details from './components/Details/Details';
-import List from './components/List/List';
+import DetailsPage from './pages/DetailsPage/DetailsPage';
+import ListPage from './pages/ListPage/ListPage';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <List />,
+    element: <ListPage />,
   },
   {
     path: '/:name',
-    element: <Details />,
+    element: <DetailsPage />,
   },
 ]);
 

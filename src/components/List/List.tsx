@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSessionStorage } from 'usehooks-ts';
-import PokemonLogo from '../../assets/pokemon-logo-black-transparent.png';
 import { useGetPokemon } from '../../queries/useGetPokemon';
 import ListItem from '../ListItem/ListItem';
 import './List.scss';
@@ -54,11 +53,7 @@ const List = () => {
   const pokemonList = showFavourites ? favouriteList : defaultList;
 
   return (
-    <div className="body">
-      <h1>
-        <img className="pokemon-logo" src={PokemonLogo} alt="pokemon-logo" aria-label="pokemon logo" />
-      </h1>
-
+    <>
       <div className="search-container">
         <input
           className="search-input"
@@ -89,10 +84,10 @@ const List = () => {
       </div>
 
       <div className="button-container">
-        <button onClick={() => handlePagination(-20)}>Previous page</button>
-        <button onClick={() => handlePagination(20)}>Next page</button>
+        <button onClick={() => handlePagination(-1)}>Previous page</button>
+        <button onClick={() => handlePagination(1)}>Next page</button>
       </div>
-    </div>
+    </>
   );
 };
 
