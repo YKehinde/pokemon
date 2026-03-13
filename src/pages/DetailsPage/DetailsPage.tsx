@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import starRegular from '../../assets/star-regular.svg';
 import starSolid from '../../assets/star-solid.svg';
 import { useGetPokemonDetails } from '../../queries/useGetPokemonDetails';
@@ -8,51 +8,104 @@ import Attributes from '../../components/Attributes/Attributes';
 import Sprites from '../../components/Sprites/Sprites';
 import './DetailsPage.scss';
 import { useSessionStorage } from 'usehooks-ts';
+import type { StoredFavouritePokemon } from '../../types/pokemon';
+import { normaliseFavouritePokemon, toggleFavouritePokemon } from '../../utils/favourites';
 
 const DetailsPage = () => {
   const navigate = useNavigate();
-  const paramName = useLocation().pathname.split('/')[1];
+  const { name: paramName = '' } = useParams();
   const { data: pokemon, isLoading } = useGetPokemonDetails(paramName || '');
-  const [favourite, setFavourite] = useSessionStorage<string[]>('favourites', []);
+  const [storedFavourites, setStoredFavourites] = useSessionStorage<StoredFavouritePokemon[]>(
+    'favourites',
+    [],
+  );
+  const favourites = normaliseFavouritePokemon(storedFavourites);
 
   const { name, sprites } = pokemon || {};
 
   const handleFavourite = (name: string) => () => {
-    if (favourite.includes(name)) {
-      setFavourite(prevFavourite => prevFavourite.filter(item => item !== name));
-    } else {
-      setFavourite(prevFavourite => [...prevFavourite, name]);
-    }
+    if (!pokemon) return;
+
+    setStoredFavourites(previous =>
+      toggleFavouritePokemon(previous, {
+        name,
+        id: pokemon.id,
+      }),
+    );
   };
 
   return (
-    <div className="details-container">
-      <button className="back-button" onClick={() => navigate('/')} aria-label="back button">
-        Go back
-      </button>
-      <div className="card">
+    <main className="details-container" id="main-content">
+      <div className="details-header">
+        <button className="back-button" type="button" onClick={() => navigate('/')}>
+          <span aria-hidden="true">←</span>
+          Back to Pokedex
+        </button>
+      </div>
+
+      <section className="card" aria-live="polite">
         {!pokemon && isLoading ? (
-          <h2>Loading...</h2>
+          <div className="status-card">
+            <h2>Loading…</h2>
+            <p>Gathering this Pokemon&apos;s latest stats and sprites.</p>
+          </div>
         ) : pokemon ? (
           <>
-            <h1 className="page-title">
-              {`${capitalise(name)}`}
-              <img
-                className="star"
-                src={favourite.includes(name) ? starSolid : starRegular}
-                alt="star"
+            <div className="card-hero">
+              <div className="title-block">
+                <p className="pokemon-id">#{String(pokemon.id).padStart(3, '0')}</p>
+                <h1 className="page-title">{capitalise(name)}</h1>
+                <p className="details-copy">
+                  Review the core profile, compare stats, and save this Pokemon to your favourites.
+                </p>
+              </div>
+
+              <button
+                className="details-favourite-button"
+                type="button"
                 onClick={handleFavourite(name)}
-              />
-            </h1>
-            <img className="default-image" src={sprites.front_default} alt="star" />
+                aria-label={
+                  favourites.some(item => item.name === name)
+                    ? `Remove ${capitalise(name)} from favourites`
+                    : `Save ${capitalise(name)} to favourites`
+                }
+                aria-pressed={favourites.some(item => item.name === name)}
+                data-active={favourites.some(item => item.name === name)}
+              >
+                <img
+                  className="favourite-icon"
+                  src={favourites.some(item => item.name === name) ? starSolid : starRegular}
+                  alt=""
+                  aria-hidden="true"
+                />
+                {favourites.some(item => item.name === name) ? 'Saved' : 'Save'}
+              </button>
+            </div>
+
+            <div className="details-overview">
+              <div className="art-panel">
+                <img
+                  className="default-image"
+                  src={String(sprites.front_default)}
+                  alt={`${capitalise(name)} default sprite`}
+                  width="220"
+                  height="220"
+                />
+              </div>
+
+              <Attributes attributes={pokemon} />
+            </div>
+
             <Sprites sprites={sprites} />
-            <Attributes attributes={pokemon} />
           </>
         ) : (
-          <h2>No Data available. Please try again</h2>
+          <div className="status-card">
+            <h2>Pokemon not found</h2>
+            <p>Try a different name or head back to the main Pokedex list.</p>
+          </div>
         )}
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

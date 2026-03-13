@@ -1,16 +1,35 @@
 import React from 'react';
 import './Sprites.scss';
+import { capitalise } from '../../utils/Capitilise';
 
-const Sprites = ({ sprites }) => {
+interface SpritesProps {
+  sprites: Record<string, string | null | object>;
+}
+
+const Sprites = ({ sprites }: SpritesProps) => {
+  const spriteEntries = Object.entries(sprites).filter(
+    (sprite): sprite is [string, string] => typeof sprite[1] === 'string' && Boolean(sprite[1]),
+  );
+
   return (
-    <div className="sprite-list">
-      <h2>Sprites</h2>
-      {Object.keys(sprites).map((key, index) => {
-        if (sprites[key] !== null && typeof sprites[key] === 'string') {
-          return <img className="sprite" key={index} src={sprites[key]} alt={key} />;
-        }
-      })}
-    </div>
+    <section className="sprite-section" aria-labelledby="sprites-heading">
+      <h2 id="sprites-heading">Sprites</h2>
+      <div className="sprite-list">
+        {spriteEntries.map(([key, value]) => (
+          <figure className="sprite-card" key={key}>
+            <img
+              className="sprite"
+              src={value}
+              alt={`${capitalise(key.replaceAll('_', ' '))} sprite`}
+              width="96"
+              height="96"
+              loading="lazy"
+            />
+            <figcaption>{capitalise(key.replaceAll('_', ' '))}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
   );
 };
 

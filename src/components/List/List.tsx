@@ -1,106 +1,173 @@
-import { createBrowserHistory } from 'history';
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { FormEvent, useMemo, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSessionStorage } from 'usehooks-ts';
 import { useGetPokemon } from '../../queries/useGetPokemon';
 import ListItem from '../ListItem/ListItem';
+import type { FavouritePokemon, StoredFavouritePokemon } from '../../types/pokemon';
+import { normaliseFavouritePokemon, toggleFavouritePokemon } from '../../utils/favourites';
 import './List.scss';
 
-type pokemonItemProps = {
-  name: string;
-  url: string;
-};
-
 const List = () => {
+  const PAGE_SIZE = 20;
   const navigate = useNavigate();
-  const history = createBrowserHistory();
-  const location = useLocation();
-  const [offset, setOffset] = useState(0);
-  const [page, setPage] = useState(1);
-  const [showFavourites, setShowFavourites] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageParam = Number(searchParams.get('page') || '1');
+  const page = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1;
+  const offset = (page - 1) * PAGE_SIZE;
+  const showFavourites = searchParams.get('view') === 'favourites';
   const { data: defaultList, isLoading } = useGetPokemon(offset);
   const [searchTerm, setSearchTerm] = useState('');
-  const [favouriteList, setFavouriteList] = useSessionStorage<pokemonItemProps[]>('favourites', []);
-
-  useEffect(() => {
-    history.push(`?page=${page}`);
-    const pageParam = new URLSearchParams(location.search).get('page');
-    if (pageParam) {
-      setPage(Number(pageParam));
-    }
-  }, [location, page]);
-
-  useEffect(() => {
-    setOffset((page - 1) * 20);
-  }, [page]);
+  const [storedFavourites, setStoredFavourites] = useSessionStorage<StoredFavouritePokemon[]>(
+    'favourites',
+    [],
+  );
+  const favouriteList = useMemo(
+    () => normaliseFavouritePokemon(storedFavourites),
+    [storedFavourites],
+  );
 
   const handlePagination = (step: number): void => {
-    if (page + step < 1) return;
-    setPage(prevPage => prevPage + step);
+    const nextPage = Math.max(1, page + step);
+    const nextSearchParams = new URLSearchParams(searchParams);
+
+    nextSearchParams.set('page', String(nextPage));
+    setSearchParams(nextSearchParams);
   };
 
-  const handleSearch = event => {
-    if (event.key === 'Enter') {
-      if (searchTerm === '') return;
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const trimmedSearchTerm = searchTerm.trim().toLowerCase();
 
-      navigate(`/${searchTerm}`);
+    if (trimmedSearchTerm) {
+      navigate(`/${trimmedSearchTerm}`);
     }
   };
 
-  const handleFavourite = (pokemon: pokemonItemProps) => () => {
-    if (favouriteList.some(favourite => favourite.name === pokemon.name)) {
-      setFavouriteList(prevFavourite => prevFavourite.filter(favourite => favourite.name !== pokemon.name));
-    } else {
-      setFavouriteList(prevFavourite => [...prevFavourite, pokemon]);
-    }
-  };
-
-  const getPokemonId = (url: string) => {
-    const urlArray = url.split('/');
-    return parseInt(urlArray[urlArray.length - 2]);
+  const handleFavourite = (pokemon: FavouritePokemon) => () => {
+    setStoredFavourites(previous => toggleFavouritePokemon(previous, pokemon));
   };
 
   const toggleShowFavourites = () => {
-    setShowFavourites(prevShowFavourites => !prevShowFavourites);
+    const nextSearchParams = new URLSearchParams(searchParams);
+
+    if (showFavourites) {
+      nextSearchParams.delete('view');
+    } else {
+      nextSearchParams.set('view', 'favourites');
+    }
+
+    nextSearchParams.set('page', String(page));
+    setSearchParams(nextSearchParams);
   };
 
-  const pokemonList = showFavourites ? favouriteList : defaultList;
+  const pokemonList = showFavourites
+    ? favouriteList
+    : (defaultList?.results || []).map(pokemon => ({
+        name: pokemon.name,
+        id: Number(pokemon.url.split('/').filter(Boolean).at(-1) || 0),
+      }));
+
+  const totalPages = defaultList ? Math.ceil(defaultList.count / PAGE_SIZE) : 0;
+  const currentPage = totalPages > 0 ? Math.min(page, totalPages) : page;
+  const canGoToNextPage = totalPages > 0 ? page < totalPages : false;
+
+  const summary = showFavourites
+    ? `${favouriteList.length} saved Pokemon`
+    : totalPages > 0
+      ? `Showing page ${currentPage} of ${totalPages}`
+      : `Showing page ${page}`;
 
   return (
     <>
-      <div className="search-container">
-        <input
-          className="search-input"
-          type="text"
-          placeholder="Search Pokemon"
-          onKeyDown={handleSearch}
-          onChange={e => setSearchTerm(e.target.value)}
-        />
-        <button onClick={toggleShowFavourites}>{showFavourites ? 'Show All' : 'Show Favourites'}</button>
-      </div>
+      <section className="list-toolbar" aria-label="Pokedex controls">
+        <form className="search-container" onSubmit={handleSearch}>
+          <label className="visually-hidden" htmlFor="pokemon-search">
+            Search for a Pokemon by name
+          </label>
+          <input
+            className="search-input"
+            id="pokemon-search"
+            name="pokemon-search"
+            type="search"
+            inputMode="search"
+            autoComplete="off"
+            spellCheck={false}
+            placeholder="Search Pokemon by name…"
+            value={searchTerm}
+            onChange={event => setSearchTerm(event.target.value)}
+          />
+          <button className="search-button" type="submit">
+            Search Pokemon
+          </button>
+          <button
+            className="filter-button"
+            type="button"
+            onClick={toggleShowFavourites}
+            aria-pressed={showFavourites}
+          >
+            {showFavourites ? 'Show Full Pokedex' : 'Show Favourites'}
+          </button>
+        </form>
 
-      <div className="list-container">
-        {pokemonList ? (
-          pokemonList.map((p: pokemonItemProps, index) => (
+        <p className="results-summary" aria-live="polite">
+          {summary}
+        </p>
+      </section>
+
+      <section className="list-container" aria-label={showFavourites ? 'Favourite Pokemon' : 'Pokemon list'}>
+        {pokemonList.length > 0 ? (
+          pokemonList.map(pokemon => (
             <ListItem
-              key={`${p.name}-${index}`}
-              name={p.name}
-              id={getPokemonId(p.url)}
-              onClick={handleFavourite(p)}
-              favourite={favouriteList.some(favourite => favourite.name === p.name)}
+              key={pokemon.name}
+              name={pokemon.name}
+              id={pokemon.id}
+              onClick={handleFavourite(pokemon)}
+              favourite={favouriteList.some(favourite => favourite.name === pokemon.name)}
             />
           ))
         ) : isLoading ? (
-          <h2>Loading...</h2>
+          <div className="status-card">
+            <h2>Loading…</h2>
+            <p>Pulling the latest Pokemon into the Pokedex.</p>
+          </div>
+        ) : showFavourites ? (
+          <div className="status-card">
+            <h2>No favourites yet</h2>
+            <p>Save a Pokemon to build a quick shortlist here.</p>
+          </div>
         ) : (
-          <h2>Something went wrong</h2>
+          <div className="status-card">
+            <h2>Something went wrong</h2>
+            <p>Refresh the page or try a different Pokemon name.</p>
+          </div>
         )}
-      </div>
+      </section>
 
-      <div className="button-container">
-        <button onClick={() => handlePagination(-1)}>Previous page</button>
-        <button onClick={() => handlePagination(1)}>Next page</button>
-      </div>
+      {!showFavourites ? (
+        <div className="button-container">
+          <button
+            className="pagination-button"
+            type="button"
+            onClick={() => handlePagination(-1)}
+            disabled={page === 1}
+          >
+            Previous Page
+          </button>
+
+          <p className="pagination-status" aria-live="polite">
+            {totalPages > 0 ? `Page ${currentPage} of ${totalPages}` : 'Loading pages…'}
+          </p>
+
+          <button
+            className="pagination-button"
+            type="button"
+            onClick={() => handlePagination(1)}
+            disabled={!canGoToNextPage}
+          >
+            Next Page
+          </button>
+        </div>
+      ) : null}
     </>
   );
 };

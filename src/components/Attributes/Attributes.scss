@@ -1,65 +1,96 @@
 .attributes {
-  margin: 0 auto;
-
-  h2 {
-    text-align: center;
-    margin: 0;
-  }
+  display: grid;
+  gap: 1rem;
 }
 
-.key-attribute--container {
-  display: flex;
-  width: 80%;
-  margin: 0 auto;
-  flex-flow: row wrap;
+.attribute-section {
+  padding: 1.25rem;
+  border: 1px solid rgba(160, 177, 208, 0.35);
+  border-radius: 24px;
+  background: #f8fbff;
+}
 
-  .key-attribute--row {
-    width: 50%;
-    flex-flow: column wrap;
-    justify-content: space-around;
+.attribute-section h2 {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+}
 
-    h3, p {
-      // align-self: center;
-      padding: 0 10px;
-      text-align: center;
-    }
-  }
+.attribute-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.attribute-card {
+  padding: 1rem;
+  border: 1px solid #dde7f5;
+  border-radius: 20px;
+  background: #ffffff;
+}
+
+.attribute-card dt {
+  color: #64748b;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.attribute-card dd {
+  margin: 0.35rem 0 0;
+  font-size: 1.55rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }
 
 .types-list {
   display: flex;
-  justify-content:space-evenly;
-  width: 40%;
-  margin: 20px auto;
-
-  .type-pill {
-    height:25px;
-   width:75px;
-   border-radius: 30px;
-   background-color:blue;
-   border:none;
-   color:white;
-  }
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
-.move-list {
-  width: 800px;
-  p {
-    margin: 0;
-    text-align: left;
-  }
-  @media (min-width: 600px) {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin: 0 auto;
-    justify-content: center;
+.type-pill {
+  margin: 0;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  color: #ffffff;
+  font-weight: 700;
+  text-align: center;
+  text-transform: capitalize;
+}
 
-    div {
-      width: 25%;
-      p {
-        text-align: center;
-      }
-    }
-  }
+.stats-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stat-row {
+  padding: 0.95rem 1rem;
+  border: 1px solid #dde7f5;
+  border-radius: 20px;
+  background: #ffffff;
+}
+
+.stat-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-bar {
+  margin-top: 0.7rem;
+  height: 0.7rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e4edf8;
+}
+
+.stat-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #2c6bed 0%, #50d0c8 100%);
 }

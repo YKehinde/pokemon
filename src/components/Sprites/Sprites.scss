@@ -1,17 +1,36 @@
+.sprite-section {
+  margin-top: 1.5rem;
+}
+
+.sprite-section h2 {
+  margin: 0 0 1rem;
+}
+
 .sprite-list {
-  margin: 0 auto;
-  width: 100%;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.sprite-card {
+  margin: 0;
+  padding: 0.9rem;
+  border: 1px solid rgba(160, 177, 208, 0.35);
+  border-radius: 20px;
+  background: #f8fbff;
   text-align: center;
 }
 
-@keyframes wiggle {
-  0% { transform: rotate(0deg); }
- 80% { transform: rotate(0deg); }
- 85% { transform: rotate(5deg); }
- 95% { transform: rotate(-5deg); }
-100% { transform: rotate(0deg); }
+.sprite {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  image-rendering: pixelated;
 }
 
-.sprite {
-  animation: wiggle 2s 4;
+.sprite-card figcaption {
+  margin-top: 0.5rem;
+  color: #4d5b76;
+  font-size: 0.88rem;
+  text-wrap: balance;
 }
